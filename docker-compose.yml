@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tic-postgres
+    environment:
+      POSTGRES_USER: tic_user
+      POSTGRES_PASSWORD: tic_pass
+      POSTGRES_DB: tic_analysis
+    ports:
+      - "5433:5432"  # 用 5433 避免与 AI Portal PG 冲突
+    volumes:
+      - tic_pg_data:/var/lib/postgresql/data
+      - ./docs/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./docs/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tic_user -d tic_analysis"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: tic-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6380:6379"  # 用 6380 避免与 AI Portal Redis 冲突
+    volumes:
+      - tic_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  tic_pg_data:
+  tic_redis_data:
