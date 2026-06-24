@@ -1,0 +1,81 @@
+import { createI18n } from 'vue-i18n';
+
+export const i18n = createI18n({
+  legacy: false,
+  locale: localStorage.getItem('tic-lang') || 'zh-CN',
+  fallbackLocale: 'en-US',
+  messages: {
+    'zh-CN': {
+      app: {
+        title: 'TIC 行业数据分析平台',
+        subtitle: 'Testing · Inspection · Certification',
+        lastUpdated: '最后更新',
+        never: '从未',
+        loading: '加载中...',
+        error: '数据加载失败',
+        refresh: '刷新',
+      },
+      filter: {
+        dateRange: '时间范围',
+        range7d: '近 7 天',
+        range30d: '近 30 天',
+        range90d: '近 90 天',
+        category: '类别',
+        all: '全部',
+        testing: '检测',
+        inspection: '检验',
+        certification: '认证',
+      },
+      kpi: {
+        totalCount: '今日检测总量',
+        passRate: '认证通过率',
+        inProgress: '在检项目数',
+        avgTurnaround: '平均交付天数',
+        benchmark: '行业基准',
+        days: '天',
+      },
+      chart: {
+        trend: '趋势分析',
+        category: '类别分布',
+        region: '地区分布',
+        noData: '暂无数据',
+      },
+    },
+    'en-US': {
+      app: {
+        title: 'TIC Industry Analytics',
+        subtitle: 'Testing · Inspection · Certification',
+        lastUpdated: 'Last updated',
+        never: 'Never',
+        loading: 'Loading...',
+        error: 'Failed to load data',
+        refresh: 'Refresh',
+      },
+      filter: {
+        dateRange: 'Range',
+        range7d: '7 days',
+        range30d: '30 days',
+        range90d: '90 days',
+        category: 'Category',
+        all: 'All',
+        testing: 'Testing',
+        inspection: 'Inspection',
+        certification: 'Certification',
+      },
+      kpi: {
+        totalCount: "Today's Total",
+        passRate: 'Pass Rate',
+        inProgress: 'In Progress',
+        avgTurnaround: 'Avg Turnaround',
+        benchmark: 'Benchmark',
+        days: 'd',
+      },
+      chart: {
+        trend: 'Trend',
+        category: 'By Category',
+        region: 'By Region',
+        noData: 'No data',
+      },
+    },
+  },
+});
