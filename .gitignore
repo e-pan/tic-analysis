@@ -33,3 +33,6 @@ coverage/
 # Misc
 .pgdata/
 .redisdata/
+data/
+node_modules/
+dist/

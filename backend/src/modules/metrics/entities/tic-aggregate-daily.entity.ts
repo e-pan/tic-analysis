@@ -6,7 +6,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Index, Unique } from 'typeorm';
 @Index('idx_agg_category_date', ['category', 'aggDate'])
 @Index('idx_agg_region_date', ['region', 'aggDate'])
 export class TicAggregateDaily {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ name: 'agg_date', type: 'date' })
@@ -39,6 +39,6 @@ export class TicAggregateDaily {
   @Column({ name: 'total_amount', type: 'numeric', precision: 14, scale: 2, nullable: true })
   totalAmount: number | null;
 
-  @Column({ name: 'updated_at', type: 'timestamptz', default: () => 'NOW()' })
+  @Column({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }

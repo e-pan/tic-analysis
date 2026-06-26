@@ -6,7 +6,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 @Index('idx_records_region_date', ['region', 'recordDate'])
 @Index('idx_records_status', ['status'])
 export class TicRecord {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ name: 'record_date', type: 'date' })
@@ -30,9 +30,9 @@ export class TicRecord {
   @Column({ name: 'turnaround_days', type: 'int', nullable: true })
   turnaroundDays: number | null;
 
-  @Column({ name: 'created_at', type: 'timestamptz', default: () => 'NOW()' })
+  @Column({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ name: 'updated_at', type: 'timestamptz', default: () => 'NOW()' })
+  @Column({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }

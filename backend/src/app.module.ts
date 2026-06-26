@@ -18,13 +18,19 @@ import { AggregationModule } from './modules/aggregation/aggregation.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (cfg: ConfigService) => ({
-        type: 'postgres',
-        url: cfg.get<string>('DATABASE_URL'),
-        entities: [TicRecord, TicAggregateDaily, MetaRefreshLog],
-        synchronize: false, // schema 用 SQL 手工管理
-        logging: cfg.get('NODE_ENV') === 'development' ? ['error', 'warn'] : ['error'],
-      }),
+      useFactory: (cfg: ConfigService) => {
+        const dbType = (cfg.get<string>('DB_TYPE') || 'postgres').toLowerCase();
+        const isSqlite = dbType === 'sqlite';
+        return {
+          type: isSqlite ? ('better-sqlite3' as any) : 'postgres',
+          url: isSqlite ? undefined : cfg.get<string>('DATABASE_URL'),
+          database: isSqlite ? cfg.get<string>('SQLITE_PATH') || './data/dev.sqlite' : undefined,
+          entities: [TicRecord, TicAggregateDaily, MetaRefreshLog],
+          // 生产 PG 用 SQL 手工管 schema；联调 SQLite 让 TypeORM 自动建表
+          synchronize: isSqlite,
+          logging: cfg.get('NODE_ENV') === 'development' ? ['error', 'warn'] : ['error'],
+        };
+      },
     }),
 
     // Rate limit
