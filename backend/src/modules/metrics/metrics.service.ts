@@ -1,4 +1,4 @@
-import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { TicRecord } from './entities/tic-record.entity';
@@ -20,6 +20,9 @@ export class MetricsService {
 
   // ===================== KPI =====================
   async getKpi(date?: string): Promise<any> {
+    if (date && date !== 'today' && date !== 'yesterday' && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new BadRequestException(`date must be YYYY-MM-DD, 'today', or 'yesterday'`);
+    }
     const targetDate = this.resolveDate(date);
     const cacheKey = `tic:kpi:${targetDate}`;
 
@@ -43,11 +46,11 @@ export class MetricsService {
           })
           .getRawOne();
 
-        const totalCount = parseInt(today?.totalcount || '0', 10);
-        const yTotal = parseInt(yesterday?.totalcount || '0', 10);
-        const passed = parseInt(today?.passedcount || '0', 10);
-        const failed = parseInt(today?.failedcount || '0', 10);
-        const inProgress = parseInt(today?.inprogresscount || '0', 10);
+        const totalCount = parseInt(today?.totalCount || '0', 10);
+        const yTotal = parseInt(yesterday?.totalCount || '0', 10);
+        const passed = parseInt(today?.passedCount || '0', 10);
+        const failed = parseInt(today?.failedCount || '0', 10);
+        const inProgress = parseInt(today?.inProgressCount || '0', 10);
         const passRate = totalCount > 0 ? +(passed / totalCount).toFixed(4) : 0;
         const yRate = yTotal > 0 ? +(totalCount / yTotal - 1).toFixed(4) : 0;
 
@@ -59,7 +62,7 @@ export class MetricsService {
             passRateDelta: 0, // 简化：MVP 不算同比
             inProgressCount: inProgress,
             inProgressDelta: 0,
-            avgTurnaroundDays: parseFloat(today?.avgturnaround || '0'),
+            avgTurnaroundDays: parseFloat(today?.avgTurnaround || '0'),
             avgTurnaroundBenchmark: 7.2,
             asOf: new Date().toISOString(),
           },
